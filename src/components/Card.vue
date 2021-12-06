@@ -1,67 +1,54 @@
 <template>
-    <div>
+    <div
+        class="w-full h-28 flex items-center group bg-white rounded-md shadow-xl py-4 my-6 transform hover:-translate-y-2 transition duration-500">
 
-        <body>
-            <header>
-                <Filter :tags="tagsList" :removeDataTag="removeDataTag" :removeAllDataTags="removeAllDataTags" />
-            </header>
-            <main>
-                <section class="job-list" id="jobList">
-                    <div class="job-info">
-                        <div class="logo-job">
-                            <!-- <img src="./assets/photosnap.svg" /> -->
-                            <div class="job-snapshot">
-                                <div class="additional">
-                                    <h2>{{dataObj.company}}</h2>
-                                    <span class="badge new" v-show="nouveau">New!</span>
-                                    <span class="badge featured" v-show="featured">Featured</span>
-                                </div>
-                                <h1 class="job-title">{{dataObj.position}}</h1>
-                                <ul class="time-place">
-                                    <li>{{dataObj.postedAt}}</li>
-                                    <li>.</li>
-                                    <li>{{dataObj.contract}}</li>
-                                    <li>.</li>
-                                    <li>{{dataObj.location}}</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <ul class="job-tags">
-                            <li><a href="#"><span class="tag-badge">{{dataObj.role}}</span></a></li>
-                            <li><a href=""><span href="#" class="tag-badge">{{dataObj.level}}</span></a></li>
-                            <JobTag v-for="text in getTags" :key="text" :text="text" @tag="$emit('tagsList', text)" />
-                        </ul>
-                    </div>
-                </section>
-            </main>
-        </body>
+        <div class="w-1.5 h-28 bg-white group-hover:bg-teal-500 rounded-l-md"></div>
+
+        <img :src="require('@/assets/'+data.logo)" class="mx-8" alt />
+        <div class="w-full flex justify-between items-center">
+
+            <div class="flex flex-col justify-start">
+                <div class="flex text-sm font-bold space-x-3">
+                    <p class="text-teal-600">{{ data.company }}</p>
+                    <span class="bg-teal-600 text-white py-1 px-2 rounded-full text-xs uppercase">New!</span>
+                    <span class="bg-black text-white py-1 px-2 rounded-full text-xs uppercase">Featured</span>
+                </div>
+
+                <h2 class="text-gray-600 hover:text-teal-600 text-lg font-bold tracking-wide mt-2">{{ data.position }}
+                </h2>
+
+                <div class="flex text-gray-400 text-xs mt-2 font-bold">
+                    {{ data.postedAt }}
+                    <span class="mx-6">·</span>
+                    {{ data.contract }}
+                    <span class="mx-6">·</span>
+                    {{ data.location }}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="flex items-center space-x-3 mr-10">
+
+            <JobTag v-for="text in getTags" :key="text" :text="text" @tag="$emit('tagsList', text)" />
+        </div>
     </div>
 </template>
 
 <script>
+    import JobTag from "./JobTag.vue";
     export default {
-        name: 'Card',
-        props: {
-            dataObj: Object,
-            tools: Array,
-            company: String,
-            position: String,
-            role: String,
-            level: String,
-            postedAt: String,
-            contract: String,
-            location: String,
-            languages: String,
-            nouveau: Boolean,
-            featured: Boolean,
+        props: ["data"],
+        components: {
+            JobTag
         },
-        // data() {
-        //     return {
-        //         datas: data,
-        //         tagsList: [],
-        //     }
-        // },
+        data() {
+            return {
+                bonjour: null,
+            }
+        },
         computed: {
+
             getTags() {
                 return [this.data.role, this.data.level, ...this.data.languages, ...this.data.tools]
             }
@@ -70,248 +57,4 @@
 </script>
 
 <style>
-    @import url("https://fonts.googleapis.com/css2?family=Spartan:wght@500;700&display=swap");
-
-    :root {
-        --main_bg_color: #5da5a4;
-        --mob_pad_hor: 5vw;
-        --desk_pad_hor: 8vw;
-        --el_pad_hor: 15px;
-        --card_pad_hor: 5vw;
-        --el_gap: 15px;
-        --tag_bg_color: #edf7f5;
-        --tag_color: #639f9d;
-        --grey: #a4a7a6;
-    }
-
-    * {
-        padding: 0;
-        margin: 0;
-        box-sizing: border-box;
-        font-family: "Spartan";
-        font-weight: 500;
-    }
-
-    body {
-        font-size: 15px;
-        background-color: #f0fafb;
-    }
-
-    header {
-        background-color: var(--main_bg_color);
-        background-repeat: no-repeat;
-        background-size: 100vw calc(100vw * 0.416);
-        width: 100%;
-        height: calc(100vw * 0.416);
-        padding: 0px var(--mob_pad_hor);
-        margin-bottom: 80px;
-    }
-
-    section.filter {
-        position: relative;
-        top: calc(calc(100vw * 0.416) - 50px);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        background-color: white;
-        box-shadow: rgba(0, 0, 0, 0.1) 0px 15px 20px -5px,
-            rgba(0, 0, 0, 0.04) 0px 8px 8px -5px;
-
-        border-radius: 8px;
-        align-items: center;
-        padding: var(--card_pad_hor);
-    }
-
-    section.filter.hide {
-        display: none;
-    }
-
-    section.filter a {
-        text-decoration: none;
-        color: var(--grey);
-    }
-
-    section.filter a:hover {
-        text-decoration: underline;
-        color: var(--tag_color);
-    }
-
-    section.filter ul {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        column-gap: var(--el_gap);
-        row-gap: var(--el_gap);
-        list-style-type: none;
-    }
-
-    section.filter li {
-        display: flex;
-        align-items: center;
-        flex-wrap: nowrap;
-        background-color: var(--tag_bg_color);
-        color: var(--tag_color);
-
-        border-radius: 5px;
-        height: 30px;
-        padding-left: var(--el_pad_hor);
-        padding-right: 0px;
-        font-weight: 700;
-    }
-
-    section.filter li span {
-        padding-left: 0px;
-        padding-right: var(--el_pad_hor);
-    }
-
-    section.filter li a {
-        width: 30px;
-        height: 30px;
-        background-repeat: no-repeat;
-        background-size: 1rem 1rem;
-        background-position: center;
-        background-color: var(--main_bg_color);
-        border-radius: 0px 5px 5px 0px;
-    }
-
-    section.filter li a:hover {
-        background-color: black;
-        font-weight: 700;
-    }
-
-
-    main {
-        margin-top: 130px;
-    }
-
-    section.job-list {
-        padding: 0px var(--mob_pad_hor);
-    }
-
-    div.job-info {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        row-gap: 15px;
-
-        background-color: white;
-        box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px,
-            rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
-
-        border-radius: 8px;
-        padding: var(--card_pad_hor);
-        border-left: 5px solid white;
-
-        margin-bottom: 70px;
-    }
-
-    div.job-info:hover {
-        border-left: 5px solid #5da4a4;
-    }
-
-    div.job-info:active {
-        border-left: 5px solid #5da4a4;
-    }
-
-    div.job-info img {
-        position: relative;
-        margin-top: calc(-42px - var(--card_pad_hor));
-    }
-
-    div.additional {
-        padding-bottom: var(--el_gap);
-        display: flex;
-        align-items: center;
-        column-gap: var(--el_gap);
-    }
-
-    div.additional h2 {
-        color: #70a3a2;
-        font-size: 16px;
-    }
-
-    span.badge {
-        box-sizing: border-box;
-        border-radius: 15px;
-        padding-left: var(--el_pad_hor);
-        padding-right: var(--el_pad_hor);
-        height: 30px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        color: white;
-        text-transform: uppercase;
-        padding-top: 3px;
-
-        font-size: 12px;
-    }
-
-    span.badge.new {
-        background-color: var(--tag_color);
-    }
-
-    span.badge.featured {
-        background-color: #292f30;
-    }
-
-    h1.job-title {
-        color: #292f30;
-        margin-bottom: var(--el_gap);
-        font-weight: 700;
-    }
-
-    ul.time-place {
-        border-bottom: 1px solid var(--grey);
-        padding-bottom: var(--el_gap);
-
-        display: flex;
-        list-style-type: none;
-        color: var(--grey);
-        column-gap: var(--el_gap);
-    }
-
-    ul.job-tags {
-        display: flex;
-        flex-wrap: wrap;
-        column-gap: var(--el_gap);
-        row-gap: var(--el_gap);
-    }
-
-    ul.job-tags li {
-        display: flex;
-        align-items: center;
-    }
-
-    ul.job-tags li a {
-        text-decoration: none;
-        background-color: var(--tag_bg_color);
-        padding: 8px var(--el_pad_hor);
-        border-radius: 8px;
-        color: var(--tag_color);
-    }
-
-    ul.job-tags li a:hover {
-        color: white;
-        background-color: var(--main_bg_color);
-    }
-
-
-    footer {
-        background-color: var(--main_bg_color);
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .attribution {
-        font-size: 11px;
-        text-align: center;
-    }
-
-    .attribution a {
-        color: hsl(228, 45%, 44%);
-    }
 </style>
